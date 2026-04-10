@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Participante } from '../models/Participante'
+import { useParticipante } from '../context/ParticipantesContext'
 
 interface Props {
   participantes: Participante[],
-  setParticipantes: (participantes: Participante[] | []) => void,
 }
 
 
-function FormParticipante({ participantes, setParticipantes }: Props) {
+function FormParticipante({ participantes }: Props) {
   const [maxId, setMaxId] = useState<number>(3);
 
   // Estados separados para cada propiedad del participante
@@ -19,6 +19,8 @@ function FormParticipante({ participantes, setParticipantes }: Props) {
   const [tecnologias, setTecnologias] = useState<string[]>([]);
   const [nivel, setNivel] = useState<string>("Principiante");
   const [aceptaTerminos, setAceptaTerminos] = useState<boolean>(false);
+
+  const {agregar} = useParticipante()
 
   // Función específica para manejar el array de tecnologías
   const handleTecnologiasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,12 +53,14 @@ function FormParticipante({ participantes, setParticipantes }: Props) {
     
     //setParticipantes([...participantes, nuevoParticipante]);\
 
-    var nuevaListaParticipantes: Participante[] = [...participantes, nuevoParticipante]
-    setParticipantes(nuevaListaParticipantes)
-    //localStorage.setItem("participantes", JSON.stringify(nuevaListaParticipantes))
-    setMaxId(maxId + 1);
+    // var nuevaListaParticipantes: Participante[] = [...participantes, nuevoParticipante]
+    // setParticipantes(nuevaListaParticipantes)
 
+    agregar(nuevoParticipante)
+    //localStorage.setItem("participantes", JSON.stringify(nuevaListaParticipantes))
+    
     // Reseteamos los estados a sus valores iniciales
+    setMaxId(maxId + 1);
     setNombre("");
     setEmail("");
     setEdad(0);

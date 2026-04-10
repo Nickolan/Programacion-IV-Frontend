@@ -1,18 +1,23 @@
 import type { Participante } from '../models/Participante'
+import { useParticipante } from '../context/ParticipantesContext'
 
 interface Props {
   participante: Participante,
-  onEliminar: (id: number) => void,
+  // onEliminar: (id: number) => void,
   color: {card: string, text:string}
 
 }
 
 const ParticipanteCard = ({
   participante,
-  onEliminar,
+  // onEliminar,
   color
 }
+
   : Props) => {
+
+    const {eliminar} = useParticipante()
+
   return (
     <div
       className={`items-start p-4 flex flex-col gap-2 ${color.card}`}
@@ -51,7 +56,7 @@ const ParticipanteCard = ({
 
       <button
         onClick={() =>
-          onEliminar(
+          eliminar(
             participante.id
           )
         }

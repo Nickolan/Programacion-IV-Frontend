@@ -4,13 +4,10 @@ import FormParticipante from "./components/FormParticipante";
 import SearchControl from "./components/SearchControl";
 import { Participante } from "./models/Participante";
 import ParticipanteCard from "./components/ParticipanteCard";
+import { useParticipante } from "./context/ParticipantesContext";
 
 function App() {
-  const [participantes, setParticipantes] = useState<Participante[]>(() => {
-    const guardados = localStorage.getItem("participantes") || `[]`;
-    const planos = JSON.parse(guardados);
-    return planos.map((p: any) => new Participante(p));
-  });
+  const {participantes} = useParticipante()
 
   const [participantesFiltrados, setParticipantesFiltrados] = useState(participantes);
 
@@ -63,21 +60,17 @@ function App() {
     setParticipantesFiltrados(filtrados);
   }, [filter, participantes]);
 
-  function deleteParticipante(id: number) {
-    const nuevaLista = participantes.filter((e: Participante) => e.id !== id);
+  // function deleteParticipante(id: number) {
+  //   const nuevaLista = participantes.filter((e: Participante) => e.id !== id);
     
-    setParticipantes(nuevaLista);
-  }
+  //   setParticipantes(nuevaLista);
+  // }
 
-  useEffect(() => {
-    localStorage.setItem("participantes", JSON.stringify(participantes));
-  }, [participantes]);
 
 
   return (
     <div className="flex flex-col items-center gap-5">
       <FormParticipante
-        setParticipantes={setParticipantes}
         participantes={participantes}
       />
 
@@ -92,7 +85,6 @@ function App() {
                     <ParticipanteCard
                     key={i}
                     participante={participante}
-                    onEliminar={deleteParticipante}
                     color={color}
                     />
                 );
