@@ -3,18 +3,20 @@ import React from "react";
 interface Promp {
     changeFilter: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void,
     filter: {nombre: string, modalidad:string, nivel:string},
+    limpiarFiltros: () => void
 }
 
 function SearchControl({
     changeFilter,
-    filter
+    filter,
+    limpiarFiltros
 
 }: Promp) {
     
 
     return (
         <div className="flex flex-col mb-5 w-full gap-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 shadow-md p-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 shadow-md p-3">
                 <input
                     className="border rounded px-3 py-1 outline-none focus:ring-2 focus:ring-blue-300 w-full"
                     placeholder="Buscar"
@@ -28,6 +30,7 @@ function SearchControl({
                     className="border rounded px-3 py-1 w-full"
                     onChange={changeFilter}
                     name="modalidad"
+                    value={filter.modalidad}
                 >
                     <option value="">Todas</option>
                     <option value="Presencial">Presencial</option>
@@ -39,12 +42,18 @@ function SearchControl({
                     className="border rounded px-3 py-1 w-full"
                     onChange={changeFilter}
                     name="nivel"
+                    value={filter.nivel}
                 >
                     <option value="">Todos</option>
                     <option value="Principiante">Principiante</option>
                     <option value="Intermedio">Intermedio</option>
                     <option value="Avanzado">Avanzado</option>
                 </select>
+
+                {
+                    (filter.modalidad !== "" || filter.nivel !== "" || filter.nombre !== "") && <button className="bg-blue-400 text-white p-2" onClick={limpiarFiltros}>Limpiar Filtros</button>
+                }
+                
             </div>           
         </div>
     );

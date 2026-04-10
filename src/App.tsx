@@ -20,6 +20,7 @@ function App() {
     nivel: "", 
   }); 
 
+
   const colores = [
     { card: "bg-red-100 border-red-400", text: "text-red-500" },
     { card: "bg-green-100 border-green-400", text: "text-green-500" },
@@ -69,6 +70,19 @@ function App() {
     setParticipantes(nuevaLista);
   }
 
+  function resetearDatos() {
+    localStorage.removeItem("participantes");
+    setParticipantes([]) 
+  }
+
+  function limpiarFiltros() {
+    setFilter({
+    nombre: "",
+    modalidad: "",
+    nivel: "", 
+  })
+  }
+
   useEffect(() => {
     localStorage.setItem("participantes", JSON.stringify(participantes));
   }, [participantes]);
@@ -81,23 +95,33 @@ function App() {
         participantes={participantes}
       />
 
-      <SearchControl filter={filter} changeFilter={changeFilter} />
+      <SearchControl filter={filter} changeFilter={changeFilter} limpiarFiltros={limpiarFiltros} />
 
         <div className="flex flex-col mb-5 w-full gap-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {participantesFiltrados.map((participante: Participante, i: number) => {
-                const color = colores[participante.id % colores.length];
+          {
+            participantesFiltrados.length > 0 ? (
+                <span>Mostrando {participantesFiltrados.length} de {participantes.length} Participantes</span>
 
-                return (
-                    <ParticipanteCard
-                    key={i}
-                    participante={participante}
-                    onEliminar={deleteParticipante}
-                    color={color}
-                    />
-                );
-                })}
-            </div>
+) : (
+  <span>No hay participantes</span>
+)
+}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {participantesFiltrados.map((participante: Participante, i: number) => {
+                    const color = colores[participante.id % colores.length];
+                    
+                    return (
+                      <ParticipanteCard
+                      key={i}
+                      participante={participante}
+                      onEliminar={deleteParticipante}
+                      color={color}
+                      />
+                    );
+                  })}
+              </div>
+              <button className="bg-blue-400 text-white p-2" onClick={resetearDatos}>Resetear Datos</button>
             </div>
 
         </div>
