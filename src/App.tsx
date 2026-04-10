@@ -121,7 +121,10 @@ function App() {
                     );
                   })}
               </div>
-              <button className="bg-blue-400 text-white p-2" onClick={resetearDatos}>Resetear Datos</button>
+              {
+                participantes.length > 0 && <button className="bg-blue-400 text-white p-2" onClick={resetearDatos}>Resetear Datos</button>
+              }
+              
             </div>
 
         </div>
