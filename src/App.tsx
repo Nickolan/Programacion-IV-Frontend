@@ -17,8 +17,8 @@ function App() {
   const [filter, setFilter] = useState({
     nombre: "",
     modalidad: "",
-    nivel: "", 
-  }); 
+    nivel: "",
+  });
 
 
   const colores = [
@@ -66,21 +66,21 @@ function App() {
 
   function deleteParticipante(id: number) {
     const nuevaLista = participantes.filter((e: Participante) => e.id !== id);
-    
+
     setParticipantes(nuevaLista);
   }
 
   function resetearDatos() {
     localStorage.removeItem("participantes");
-    setParticipantes([]) 
+    setParticipantes([])
   }
 
   function limpiarFiltros() {
     setFilter({
-    nombre: "",
-    modalidad: "",
-    nivel: "", 
-  })
+      nombre: "",
+      modalidad: "",
+      nivel: "",
+    })
   }
 
   useEffect(() => {
@@ -97,37 +97,38 @@ function App() {
 
       <SearchControl filter={filter} changeFilter={changeFilter} limpiarFiltros={limpiarFiltros} />
 
-        <div className="flex flex-col mb-5 w-full gap-5">
-          {
-            participantesFiltrados.length > 0 ? (
-                <span>Mostrando {participantesFiltrados.length} de {participantes.length} Participantes</span>
+      <div className="flex flex-col mb-5 w-full gap-5">
+        {
+          participantesFiltrados.length > 0 ? (
+            <span>Mostrando {participantesFiltrados.length} de {participantes.length} Participantes</span>
 
-) : (
-  <span>No hay participantes</span>
-)
-}
+          ) : (
+            <span>No hay participantes</span>
+          )
+        }
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {participantesFiltrados.map((participante: Participante, i: number) => {
-                    const color = colores[participante.id % colores.length];
-                    
-                    return (
-                      <ParticipanteCard
-                      key={i}
-                      participante={participante}
-                      onEliminar={deleteParticipante}
-                      color={color}
-                      />
-                    );
-                  })}
-              </div>
-              {
-                participantes.length > 0 && <button className="bg-blue-400 text-white p-2" onClick={resetearDatos}>Resetear Datos</button>
-              }
-              
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {participantesFiltrados.map((participante: Participante, i: number) => {
+            const color = colores[participante.id % colores.length];
 
+            return (
+              <ParticipanteCard
+                key={i}
+                participante={participante}
+                onEliminar={deleteParticipante}
+                color={color}
+              />
+            );
+            
+          })}
         </div>
+        {
+          participantes.length > 0 && <button className="bg-blue-400 text-white p-2" onClick={resetearDatos}>Resetear Datos</button>
+        }
+
+      </div>
+
+    </div>
   );
 }
 
