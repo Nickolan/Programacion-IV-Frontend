@@ -7,7 +7,7 @@ import ParticipanteCard from "./components/ParticipanteCard";
 import { useParticipante } from "./context/ParticipantesContext";
 
 function App() {
-  const {participantes} = useParticipante()
+  const {participantes, resetear} = useParticipante()
 
   const [participantesFiltrados, setParticipantesFiltrados] = useState(participantes);
 
@@ -60,11 +60,14 @@ function App() {
     setParticipantesFiltrados(filtrados);
   }, [filter, participantes]);
 
-  // function deleteParticipante(id: number) {
-  //   const nuevaLista = participantes.filter((e: Participante) => e.id !== id);
-    
-  //   setParticipantes(nuevaLista);
-  // }
+
+  function limpiarFiltros() {
+    setFilter({
+      nombre: "",
+      modalidad: "",
+      nivel: "",
+    })
+  }
 
 
 
@@ -74,25 +77,39 @@ function App() {
         participantes={participantes}
       />
 
-      <SearchControl filter={filter} changeFilter={changeFilter} />
+      <SearchControl filter={filter} changeFilter={changeFilter} limpiarFiltros={limpiarFiltros} />
 
         <div className="flex flex-col mb-5 w-full gap-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {participantesFiltrados.map((participante: Participante, i: number) => {
-                const color = colores[participante.id % colores.length];
+        {
+          participantesFiltrados.length > 0 ? (
+            <span>Mostrando {participantesFiltrados.length} de {participantes.length} Participantes</span>
 
-                return (
-                    <ParticipanteCard
-                    key={i}
-                    participante={participante}
-                    color={color}
-                    />
-                );
-                })}
-            </div>
-            </div>
+          ) : (
+            <span>No hay participantes</span>
+          )
+        }
 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {participantesFiltrados.length > 0 && participantesFiltrados.map((participante: Participante, i: number) => {
+            const color = colores[participante.id % colores.length];
+
+            return (
+              <ParticipanteCard
+                key={i}
+                participante={participante}
+                color={color}
+              />
+            );
+            
+          })}
         </div>
+        {
+          participantes.length > 0 && <button className="bg-blue-400 text-white p-2" onClick={resetear}>Resetear Datos</button>
+        }
+
+      </div>
+
+    </div>
   );
 }
 
