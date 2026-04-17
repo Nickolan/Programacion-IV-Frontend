@@ -1,19 +1,26 @@
 import { Participante } from "../models/Participante";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useReducer, useEffect, useState, type ReactNode } from "react";
 import axios from 'axios'
+import { reducer } from "../reducers/ParticipantesReducer";
 
 interface ContextType {
     participantes: Participante[];
-    agregar: (p: Participante) => void;
-    eliminar: (id: number) => void;
-    resetear: () => void;
+    participanteEnEdicion: Participante | null; // Nuevo
+    setParticipanteEnEdicion: (p: Participante | null) => void; // Nuevo
+    agregar: (p: Participante) => Promise<void>;
+    actualizar: (p: Participante) => Promise<void>; // Acción SET/Actualizar
+    eliminar: (id: number) => Promise<void>;
+    resetear: () => Promise<void>;
 }
 
 const ParticipantesContext = createContext<ContextType | null>(null);
 
 export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
 
-    const [participantes, setParticipantes] = useState<Participante[]>([]);
+    const [participantes, dispatch] = useReducer(reducer, [])
+    const [participanteEnEdicion, setParticipanteEnEdicion] = useState<Participante | null>(null);
+
+    
 
   // Obtener todos los participantes del servidor al cargar el componente
   useEffect(() => {
@@ -22,7 +29,7 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
         const response = await axios.get('http://localhost:8000/participantes');
         console.log(response.data);
         
-        setParticipantes(response.data);
+        dispatch({type: "GET_PARTICIPANTES", payload: response.data})
       } catch (error) {
         console.error('Error fetching participantes:', error);
       }
@@ -39,7 +46,7 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
         const response = await axios.post('http://localhost:8000/participantes', p)
 
         if (response.status == 201) {
-            setParticipantes([...participantes, response.data]);
+            dispatch({type: "AGREGAR", payload: response.data})
         }
     }
 
@@ -49,7 +56,7 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
         const response = await axios.delete(`http://localhost:8000/participantes/${id}`);
         
         if (response.status == 204) {
-            setParticipantes(participantes.filter((e: Participante) => e.id !== id));
+            dispatch({type: "ELIMINAR", payload: id})
         }
     }
 
@@ -57,11 +64,19 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
         // Eliminar todos los participantes del servidor usando axios
         const response = await axios.delete('http://localhost:8000/participantes');
         if (response.status == 204) {
-            setParticipantes([]);
+            dispatch({type: "RESET", payload: []})
         }
     }
 
-    return <ParticipantesContext.Provider value={{agregar, participantes, eliminar, resetear}}>
+    const actualizar = async (p: Participante) => {
+        const response = await axios.put(`http://localhost:8000/participantes/${p.id}`, p);
+        if (response.status === 200) {
+            dispatch({ type: "EDITAR", payload: response.data });
+            setParticipanteEnEdicion(null); // Limpiamos la edición tras éxito
+        }
+    }
+
+    return <ParticipantesContext.Provider value={{agregar, participantes, eliminar, resetear, actualizar, participanteEnEdicion, setParticipanteEnEdicion}}>
         {children}
     </ParticipantesContext.Provider>
 

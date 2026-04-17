@@ -16,7 +16,7 @@ const ParticipanteCard = ({
 
   : Props) => {
 
-    const {eliminar} = useParticipante()
+    const {eliminar, setParticipanteEnEdicion} = useParticipante()
 
   return (
     <div
@@ -54,16 +54,34 @@ const ParticipanteCard = ({
           </span>
         )}
 
-      <button
-        onClick={() =>
-          eliminar(
-            participante.id
-          )
-        }
-        className="mt-2 bg-red-500 hover:bg-red-600 transition text-white py-1 px-3 rounded-lg self-start"
+      <div
+        className='flex row gap-2'
       >
-        Eliminar
-      </button>
+
+        <button
+          onClick={() =>
+            setParticipanteEnEdicion(
+              participante
+            )
+          }
+          className="mt-2 bg-blue-500 hover:bg-blue-600 transition text-white py-1 px-3 rounded-lg self-start"
+          >
+          Editar
+        </button>
+
+
+        <button
+          onClick={() =>
+            eliminar(
+              participante.id
+            )
+          }
+          className="mt-2 bg-red-500 hover:bg-red-600 transition text-white py-1 px-3 rounded-lg self-start"
+          >
+          Eliminar
+        </button>
+        
+        </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Participante } from '../models/Participante'
 import { useParticipante } from '../context/ParticipantesContext'
 
@@ -6,133 +6,133 @@ interface Props {
   participantes: Participante[],
 }
 
+const initialState = {
+  id: 0,
+  nombre: "",
+  email: "",
+  edad: 0,
+  pais: "Argentina",
+  modalidad: "Presencial",
+  tecnologias: [] as string[],
+  nivel: "Principiante",
+  aceptaTerminos: false
+};
+
 
 function FormParticipante({ participantes }: Props) {
-  const [maxId, setMaxId] = useState<number>(3);
 
-  // Estados separados para cada propiedad del participante
-  const [nombre, setNombre] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [edad, setEdad] = useState<number>(0);
-  const [pais, setPais] = useState<string>("Argentina");
-  const [modalidad, setModalidad] = useState<string>("Presencial");
-  const [tecnologias, setTecnologias] = useState<string[]>([]);
-  const [nivel, setNivel] = useState<string>("Principiante");
-  const [aceptaTerminos, setAceptaTerminos] = useState<boolean>(false);
+  const [formData, setFormData] = useState(initialState);
+  const { agregar, actualizar, participanteEnEdicion, setParticipanteEnEdicion } = useParticipante();
 
-  const {agregar} = useParticipante()
+  // EFECTO: Si el context dice que hay alguien para editar, llenamos el formulario
+  useEffect(() => {
+    if (participanteEnEdicion) {
+      setFormData({ ...participanteEnEdicion });
+    } else {
+      setFormData(initialState);
+    }
+  }, [participanteEnEdicion]);
 
   // Función específica para manejar el array de tecnologías
   const handleTecnologiasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setTecnologias(prev => 
-      prev.includes(value) 
-        ? prev.filter(t => t !== value) 
-        : [...prev, value]
-    );
+    const { value, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      tecnologias: checked 
+        ? [...prev.tecnologias, value] 
+        : prev.tecnologias.filter(t => t !== value)
+    }));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'number' ? Number(value) : value
+    }));
   };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    
-    // Armamos el objeto con los datos actuales de todos los estados
-    const datosParticipante = {
-      id: maxId,
-      nombre,
-      email,
-      edad,
-      pais,
-      modalidad,
-      tecnologias,
-      nivel,
-      aceptaTerminos
-    };
+    const participanteFinal = new Participante(formData);
 
-    // Instanciamos el objeto Participante
-    const nuevoParticipante = new Participante(datosParticipante);
+    if (participanteEnEdicion) {
+      // Si estamos editando, usamos la acción de actualizar
+      await actualizar(participanteFinal);
+    } else {
+      // Si es nuevo, generamos un ID (o dejamos que el server lo haga) y agregamos
+      const nuevoConId = { ...participanteFinal, id: Date.now() }; 
+      await agregar(nuevoConId);
+    }
     
-    //setParticipantes([...participantes, nuevoParticipante]);\
-
-    // var nuevaListaParticipantes: Participante[] = [...participantes, nuevoParticipante]
-    // setParticipantes(nuevaListaParticipantes)
-
-    agregar(nuevoParticipante)
-    //localStorage.setItem("participantes", JSON.stringify(nuevaListaParticipantes))
-    
-    // Reseteamos los estados a sus valores iniciales
-    setMaxId(maxId + 1);
-    setNombre("");
-    setEmail("");
-    setEdad(0);
-    setPais("Argentina");
-    setModalidad("Presencial");
-    setTecnologias([]);
-    setNivel("Principiante");
-    setAceptaTerminos(false);
+    setFormData(initialState);
   }
 
   return (
     <form onSubmit={submit} className='w-full shadow-md py-4 px-2 gap-5'>
-      <nav className='flex bg-green-500 p-2'>
-        <span className='text-white'>Registro de Participantes</span>
+      <nav className={`flex p-2 ${participanteEnEdicion ? 'bg-orange-500' : 'bg-green-500'}`}>
+        <span className='text-white'>
+            {participanteEnEdicion ? `Editando a: ${participanteEnEdicion.nombre}` : 'Registro de Participantes'}
+        </span>
       </nav>
 
       <div className='flex mb-5'><span>Participantes registrados: {participantes.length}</span></div>
       
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <input className="border p-2 rounded" onChange={(e) => setNombre(e.target.value)} required name='nombre' placeholder="Nombre" type="text" value={nombre} />
-        <input className="border p-2 rounded" onChange={(e) => setEmail(e.target.value)} required name='email' placeholder="Email" type="email" value={email} />
-        <input className="border p-2 rounded" onChange={(e) => setEdad(Number(e.target.value))} name='edad' placeholder="Edad" type="number" value={edad} />
-        <select className="border p-2 rounded" onChange={(e) => setPais(e.target.value)} required name="pais" value={pais} id="">
+        <input className="border p-2 rounded" name='nombre' value={formData.nombre} onChange={handleChange} placeholder="Nombre" type="text" required />
+        <input className="border p-2 rounded" name='email' value={formData.email} onChange={handleChange} placeholder="Email" type="email" required />
+        <input className="border p-2 rounded" name='edad' value={formData.edad} onChange={handleChange} placeholder="Edad" type="number" />
+        
+        <select className="border p-2 rounded" name="pais" value={formData.pais} onChange={handleChange}>
             <option value="Argentina">Argentina</option>
             <option value="Chile">Chile</option>
-            <option value="Uruguay">Uruguay</option>
             <option value="Mexico">Mexico</option>
-            <option value="España">España</option>
         </select>
       </div>
 
+      {/* Modalidad (Radio) */}
       <div className="flex flex-col items-start mb-2">
         <h2 className='text-base'>Modalidad</h2>
         <div className='flex gap-3'>
-          <div>
-            <input onChange={(e) => setModalidad(e.target.value)} value="Presencial" checked={modalidad === "Presencial"} type="radio" name="modalidad" id="" /><label htmlFor="">Presencial</label>
-          </div>
-          <div>
-            <input onChange={(e) => setModalidad(e.target.value)} value="Hibrido" checked={modalidad === "Hibrido"} type="radio" name="modalidad" id="" /><label htmlFor="">Hibrido</label>
-          </div>
-          <div>
-            <input onChange={(e) => setModalidad(e.target.value)} value="Virtual" checked={modalidad === "Virtual"} type="radio" name="modalidad" id="" /><label htmlFor="">Virtual</label>
-          </div>
+          {["Presencial", "Hibrido", "Virtual"].map(mod => (
+            <div key={mod}>
+              <input type="radio" name="modalidad" value={mod} checked={formData.modalidad === mod} onChange={handleChange} />
+              <label>{mod}</label>
+            </div>
+          ))}
         </div>
       </div>
 
+      {/* Tecnologias (Checkbox) */}
       <div className='flex flex-col items-start mb-2'>
-        <h2 className='text-base' >Tecnologias</h2>
-        <div className='grid grid-cols-3 w-full items-start'>
-          {/* Agregué la propiedad 'checked' a los checkboxes para que sean completamente controlados por React */}
-          <div className='flex items-start flex-row'><label htmlFor=""><input onChange={handleTecnologiasChange} checked={tecnologias.includes("React")} value="React" type="checkbox" name="tecnologias" id="" /> React</label></div>
-          <div className='flex items-start flex-row'><label htmlFor=""><input onChange={handleTecnologiasChange} checked={tecnologias.includes("Angular")} value="Angular" type="checkbox" name="tecnologias" id="" /> Angular</label></div>
-          <div className='flex items-start flex-row'><label htmlFor=""><input onChange={handleTecnologiasChange} checked={tecnologias.includes("Vue")} value="Vue" type="checkbox" name="tecnologias" id="" /> Vue</label></div>
-          <div className='flex items-start flex-row'><label htmlFor=""><input onChange={handleTecnologiasChange} checked={tecnologias.includes("Node")} value="Node" type="checkbox" name="tecnologias" id="" /> Node</label></div>
-          <div className='flex items-start flex-row'><label htmlFor=""><input onChange={handleTecnologiasChange} checked={tecnologias.includes("Python")} value="Python" type="checkbox" name="tecnologias" id="" /> Python</label></div>
-          <div className='flex items-start flex-row'><label htmlFor=""><input onChange={handleTecnologiasChange} checked={tecnologias.includes("Java")} value="Java" type="checkbox" name="tecnologias" id="" /> Java</label></div>
+        <h2 className='text-base'>Tecnologias</h2>
+        <div className='grid grid-cols-3 w-full'>
+          {["React", "Angular", "Vue", "Node", "Python", "Java"].map(tech => (
+            <label key={tech}>
+              <input type="checkbox" value={tech} checked={formData.tecnologias.includes(tech)} onChange={handleTecnologiasChange} /> {tech}
+            </label>
+          ))}
         </div>
-      </div>
-      
-      <div className='border my-4'>
-        <select className='w-full p-1' onChange={(e) => setNivel(e.target.value)} required value={nivel} name="nivel" id="">
-          <option value="Principiante">Principiante</option>
-          <option value="Intermedio">Intermedio</option>
-          <option value="Avanzado">Avanzado</option>
-        </select>
       </div>
 
       <div className='flex flex-col items-start gap-2'>
-        <label htmlFor=""><input onChange={(e) => setAceptaTerminos(e.target.checked)} checked={aceptaTerminos} type="checkbox" name="aceptaTerminos" required id="" /> Acepto Terminos</label>
-        <input className="bg-blue-500 py-1 px-2 text-white" type="submit" value="Registrar" />
+        <label>
+            <input type="checkbox" name="aceptaTerminos" checked={formData.aceptaTerminos} onChange={(e) => setFormData({...formData, aceptaTerminos: e.target.checked})} required /> 
+            Acepto Terminos
+        </label>
+        
+        <div className='flex gap-2'>
+            <button className={`${participanteEnEdicion ? 'bg-orange-500' : 'bg-blue-500'} py-1 px-4 text-white`} type="submit">
+                {participanteEnEdicion ? 'Actualizar' : 'Registrar'}
+            </button>
+            
+            {participanteEnEdicion && (
+                <button type="button" onClick={() => setParticipanteEnEdicion(null)} className="bg-gray-400 py-1 px-4 text-white">
+                    Cancelar
+                </button>
+            )}
+        </div>
       </div>
-
     </form>
   )
 }
