@@ -5,10 +5,10 @@ import { reducer } from "../reducers/ParticipantesReducer";
 
 interface ContextType {
     participantes: Participante[];
-    participanteEnEdicion: Participante | null; // Nuevo
-    setParticipanteEnEdicion: (p: Participante | null) => void; // Nuevo
+    participanteEnEdicion: Participante | null;
+    setParticipanteEnEdicion: (p: Participante | null) => void; 
     agregar: (p: Participante) => Promise<void>;
-    actualizar: (p: Participante) => Promise<void>; // Acción SET/Actualizar
+    actualizar: (p: Participante) => Promise<void>;
     eliminar: (id: number) => Promise<void>;
     resetear: () => Promise<void>;
 }
@@ -22,7 +22,6 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
 
     
 
-  // Obtener todos los participantes del servidor al cargar el componente
   useEffect(() => {
     const fetchParticipantes = async () => {
       try {
@@ -41,7 +40,6 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
     
     const agregar = async (p:Participante) => {
 
-        // Llamar a servidor /participantes con POST y enviar el nuevo participante usando axios
 
         const response = await axios.post('http://localhost:8000/participantes', p)
 
@@ -52,7 +50,6 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
 
     const eliminar = async (id : number) => {
         
-        // Llamar a servidor /participantes/{id} con DELETE usando axios
         const response = await axios.delete(`http://localhost:8000/participantes/${id}`);
         
         if (response.status == 204) {
@@ -61,7 +58,6 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
     }
 
     const resetear = async () => {
-        // Eliminar todos los participantes del servidor usando axios
         const response = await axios.delete('http://localhost:8000/participantes');
         if (response.status == 204) {
             dispatch({type: "RESET", payload: []})
@@ -72,7 +68,7 @@ export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
         const response = await axios.put(`http://localhost:8000/participantes/${p.id}`, p);
         if (response.status === 200) {
             dispatch({ type: "EDITAR", payload: response.data });
-            setParticipanteEnEdicion(null); // Limpiamos la edición tras éxito
+            setParticipanteEnEdicion(null);
         }
     }
 
