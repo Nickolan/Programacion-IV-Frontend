@@ -1,13 +1,12 @@
-import React from 'react'
 import FormParticipante from '../components/FormParticipante'
-import { useParticipante } from '../context/ParticipantesContext'
+import { useNavigate } from 'react-router-dom'
 
 const FormularioPage = () => {
-    const {participantes} = useParticipante()
+    const navigate = useNavigate()
   return (
     <div className="flex flex-col items-center gap-5">
         <FormParticipante
-          participantes={participantes}
+          onSuccess={() => navigate("/lista")}
         />
       </div>
   )

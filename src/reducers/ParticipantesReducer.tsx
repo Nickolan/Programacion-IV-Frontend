@@ -24,6 +24,9 @@ export const reducer = (state: Participante[], action: Action): Participante[] =
     case "RESET":
         return action.payload
 
+    case "EDITAR":
+      return state.map(p => p.id === action.payload.id ? action.payload : p)
+
     default:
       return state;
   }

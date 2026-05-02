@@ -1,10 +1,11 @@
 import type { Participante } from '../models/Participante'
 import { useParticipante } from '../context/ParticipantesContext'
+import { useNavigate } from 'react-router-dom'
 
 interface Props {
   participante: Participante,
   // onEliminar: (id: number) => void,
-  color: {card: string, text:string}
+  color: { card: string, text: string }
 
 }
 
@@ -16,7 +17,8 @@ const ParticipanteCard = ({
 
   : Props) => {
 
-    const {eliminar, setParticipanteEnEdicion} = useParticipante()
+  const { eliminar } = useParticipante()
+  const navigate = useNavigate()
 
   return (
     <div
@@ -60,12 +62,10 @@ const ParticipanteCard = ({
 
         <button
           onClick={() =>
-            setParticipanteEnEdicion(
-              participante
-            )
+            navigate(`/editar/${participante.id}`)
           }
           className="mt-2 bg-blue-500 hover:bg-blue-600 transition text-white py-1 px-3 rounded-lg self-start"
-          >
+        >
           Editar
         </button>
 
@@ -77,11 +77,11 @@ const ParticipanteCard = ({
             )
           }
           className="mt-2 bg-red-500 hover:bg-red-600 transition text-white py-1 px-3 rounded-lg self-start"
-          >
+        >
           Eliminar
         </button>
-        
-        </div>
+
+      </div>
     </div>
   )
 }

@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Participante } from '../models/Participante'
 import { useParticipante } from '../context/ParticipantesContext'
 
-interface Props {
-  participantes: Participante[],
-}
 
 const initialState = {
   id: 0,
@@ -19,10 +16,10 @@ const initialState = {
 };
 
 
-function FormParticipante({ participantes }: Props) {
+function FormParticipante({ onSuccess }: any) {
 
   const [formData, setFormData] = useState(initialState);
-  const { agregar, actualizar, participanteEnEdicion, setParticipanteEnEdicion } = useParticipante();
+  const { agregar, actualizar, participanteEnEdicion, setParticipanteEnEdicion, participantes } = useParticipante();
 
   // EFECTO: Si el context dice que hay alguien para editar, llenamos el formulario
   useEffect(() => {
@@ -66,6 +63,8 @@ function FormParticipante({ participantes }: Props) {
     }
     
     setFormData(initialState);
+
+    onSuccess()
   }
 
   return (

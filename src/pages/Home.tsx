@@ -1,24 +1,16 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import MenuResponsive from '../components/MenuResponsive'
 
 const Home = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">Bienvenido</h1>
-        <div className="flex gap-4">
-          <Link 
-            to="/nuevo"
-            className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition duration-200"
-          >
-            Nuevo Participante
-          </Link>
-          <Link 
-            to="/lista"
-            className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition duration-200"
-          >
-            Ver Lista
-          </Link>
+    <div className="min-h-screen bg-gray-50">
+      <MenuResponsive />
+
+      <div className="flex items-center justify-center px-4 py-16">
+        <div className="text-center max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Bienvenido</h1>
+          <p className="text-gray-600 mb-8">
+            Crea, edita y visualiza tus participantes de manera fácil y rápida. Usa el menú para navegar entre las opciones disponibles.
+          </p>
         </div>
       </div>
     </div>
