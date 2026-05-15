@@ -3,6 +3,7 @@ import FormParticipante from '../components/FormParticipante'
 import { useNavigate } from 'react-router-dom'
 import { useParticipante } from '../context/ParticipantesContext'
 import { useParams } from 'react-router-dom'
+import MenuResponsive from '../components/MenuResponsive'
 
 const EditarPage = () => {
   const navigate = useNavigate()
@@ -18,6 +19,7 @@ const EditarPage = () => {
   }, [id]);
   return (
     <div className="flex flex-col items-center gap-5">
+      <MenuResponsive />
       <FormParticipante
         onSuccess={() => navigate("/lista")}
 

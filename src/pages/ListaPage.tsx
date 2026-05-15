@@ -3,6 +3,7 @@ import ParticipanteCard from '../components/ParticipanteCard';
 import type { Participante } from '../models/Participante';
 import { useParticipante } from '../context/ParticipantesContext';
 import { useEffect, useState } from 'react';
+import MenuResponsive from '../components/MenuResponsive';
 
 const ListaPage = () => {
     const {participantes, resetear} = useParticipante()
@@ -85,6 +86,7 @@ const ListaPage = () => {
 
   return (
     <div className="flex flex-col items-center gap-5">
+      <MenuResponsive />
       <SearchControl filter={filter} changeFilter={changeFilter} limpiarFiltros={limpiarFiltros} />
   
           <div className="flex flex-col mb-5 w-full gap-5">
