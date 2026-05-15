@@ -7,7 +7,7 @@ interface ContextType {
     error: string | null;
     login: (username: string, password: string) => Promise<boolean>;
     logout: () => void;
-    getUsuarioFromToken: (token: string) => void;
+    getUsuarioFromToken: (token: string) => Promise<Usuario | null>;
 }
 
 const AuthContext = createContext<ContextType | null>(null);
@@ -37,13 +37,13 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
     const getUsuarioFromToken = async (token: string) => {
         if (!token) return null;
-        console.log(token);
         
         try {
             const response = await axios.get('http://localhost:8000/api/v1/auth/me', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUsuario(response.data);
+            return response.data;
         } catch (error) {
             console.error('Error fetching user from token:', error);
             return null;
