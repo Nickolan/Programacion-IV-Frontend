@@ -1,7 +1,6 @@
 import type { Participante } from '../models/Participante'
 import { useParticipante } from '../context/ParticipantesContext'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 
 interface Props {
   participante: Participante,
@@ -17,8 +16,6 @@ const ParticipanteCard = ({
 }
 
   : Props) => {
-
-    const {usuario} = useAuth();
 
   const { eliminar } = useParticipante()
   const navigate = useNavigate()
@@ -59,39 +56,32 @@ const ParticipanteCard = ({
           </span>
         )}
 
-        {
-          usuario?.rol === "ADMIN" && (
+      <div
+        className='flex row gap-2'
+      >
 
-            <div
-              className='flex row gap-2'
-            >
-
-              <button
-                onClick={() =>
-                  navigate(`/editar/${participante.id}`)
-                }
-                className="mt-2 bg-blue-500 hover:bg-blue-600 transition text-white py-1 px-3 rounded-lg self-start"
-              >
-                Editar
-              </button>
+        <button
+          onClick={() =>
+            navigate(`/editar/${participante.id}`)
+          }
+          className="mt-2 bg-blue-500 hover:bg-blue-600 transition text-white py-1 px-3 rounded-lg self-start"
+        >
+          Editar
+        </button>
 
 
-              <button
-                onClick={() =>
-                  eliminar(
-                    participante.id
-                  )
-                }
-                className="mt-2 bg-red-500 hover:bg-red-600 transition text-white py-1 px-3 rounded-lg self-start"
-              >
-                Eliminar
-              </button>
+        <button
+          onClick={() =>
+            eliminar(
+              participante.id
+            )
+          }
+          className="mt-2 bg-red-500 hover:bg-red-600 transition text-white py-1 px-3 rounded-lg self-start"
+        >
+          Eliminar
+        </button>
 
-            </div>
-
-          )
-        }
-
+      </div>
     </div>
   )
 }

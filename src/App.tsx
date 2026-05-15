@@ -17,8 +17,6 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    console.log("ejecutando");
-    
     if (token) {
       getUsuarioFromToken(token);
       
@@ -33,9 +31,9 @@ function App() {
       <Route path="/" element={<Home/>} />
       <Route path="/login" element={<LoginPage/>} />
       <Route path="/publica" element={<PublicaPage/>} />
-      <Route path="/lista" element={<PrivateRoute rolesHabilitados={["CONSULTA", "ADMIN"]}><ListaPage/></PrivateRoute>} />
-      <Route path="/nuevo" element={<PrivateRoute rolesHabilitados={["ADMIN"]}><FormularioPage/></PrivateRoute>} />
-      <Route path="/editar/:id" element={<PrivateRoute rolesHabilitados={["ADMIN"]}><EditarPage/></PrivateRoute>} />
+      <Route path="/lista" element={<ListaPage/>} />
+      <Route path="/nuevo" element={<PrivateRoute rol="ADMIN"><FormularioPage/></PrivateRoute>} />
+      <Route path="/editar/:id" element={<PrivateRoute rol="ADMIN"><EditarPage/></PrivateRoute>} />
     </Routes>
 
 
