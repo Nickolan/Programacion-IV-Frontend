@@ -67,6 +67,22 @@ const ListaPage = () => {
     })
   }
 
+    useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key.toLowerCase() === 'b') {
+        event.preventDefault(); // Previene la acción por defecto del navegador (ej. abrir favoritos)
+        
+        alert('¡Se presionó CTRL + B!');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col items-center gap-5">
       <SearchControl filter={filter} changeFilter={changeFilter} limpiarFiltros={limpiarFiltros} />

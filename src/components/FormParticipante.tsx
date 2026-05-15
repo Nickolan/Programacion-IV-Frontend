@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Participante } from '../models/Participante'
 import { useParticipante } from '../context/ParticipantesContext'
 
@@ -20,6 +20,8 @@ function FormParticipante({ onSuccess }: any) {
 
   const [formData, setFormData] = useState(initialState);
   const { agregar, actualizar, participanteEnEdicion, setParticipanteEnEdicion, participantes } = useParticipante();
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // EFECTO: Si el context dice que hay alguien para editar, llenamos el formulario
   useEffect(() => {
@@ -67,6 +69,11 @@ function FormParticipante({ onSuccess }: any) {
     onSuccess()
   }
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+
   return (
     <form onSubmit={submit} className='w-full shadow-md py-4 px-2 gap-5'>
       <nav className={`flex p-2 ${participanteEnEdicion ? 'bg-orange-500' : 'bg-green-500'}`}>
@@ -78,7 +85,7 @@ function FormParticipante({ onSuccess }: any) {
       <div className='flex mb-5'><span>Participantes registrados: {participantes.length}</span></div>
       
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <input className="border p-2 rounded" name='nombre' value={formData.nombre} onChange={handleChange} placeholder="Nombre" type="text" required />
+        <input className="border p-2 rounded" ref={inputRef} name='nombre' value={formData.nombre} onChange={handleChange} placeholder="Nombre" type="text" required />
         <input className="border p-2 rounded" name='email' value={formData.email} onChange={handleChange} placeholder="Email" type="email" required />
         <input className="border p-2 rounded" name='edad' value={formData.edad} onChange={handleChange} placeholder="Edad" type="number" />
         
