@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext';
 
 const MenuResponsive = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const {usuario, logout} = useAuth();
 
   const closeMenu = () => setIsOpen(false)
 
@@ -14,18 +16,43 @@ const MenuResponsive = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            to="/nuevo"
-            className="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition duration-200"
-          >
-            Nuevo Participante
-          </Link>
+          {usuario?.rol === "ADMIN" &&
+            <Link
+              to="/nuevo"
+              className="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition duration-200"
+            >
+              Nuevo Participante
+            </Link>
+          
+          }
           <Link
             to="/lista"
             className="px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition duration-200"
           >
             Ver Lista
           </Link>
+
+          {
+            usuario?.id ? (
+              <button
+                onClick={() => {
+                  logout();
+                }}
+                className='className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition duration-200 text-center"'
+              >
+                Cerrar Sesion
+              </button>
+            ) :
+            (
+              <Link
+                to="/login"
+                onClick={closeMenu}
+                className="px-5 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition duration-200 text-center"
+              >
+                Iniciar Sesión
+              </Link>
+            )
+          }
         </div>
 
         <button
@@ -42,13 +69,15 @@ const MenuResponsive = () => {
 
       <div className={`${isOpen ? 'block' : 'hidden'} md:hidden mt-3 rounded-2xl bg-white border border-gray-200 shadow-lg p-3`}>
         <div className="flex flex-col gap-2">
-          <Link
-            to="/nuevo"
-            onClick={closeMenu}
-            className="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition duration-200 text-center"
-          >
-            Nuevo Participante
-          </Link>
+          {usuario?.rol === "ADMIN" &&
+            <Link
+              to="/nuevo"
+              className="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition duration-200"
+            >
+              Nuevo Participante
+            </Link>
+          
+          }
           <Link
             to="/lista"
             onClick={closeMenu}
@@ -56,6 +85,29 @@ const MenuResponsive = () => {
           >
             Ver Lista
           </Link>
+
+          {
+            usuario?.id ? (
+              <button
+                onClick={() => {
+                  logout();
+                }}
+                className='className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition duration-200 text-center"'
+              >
+                Cerrar Sesion
+              </button>
+            ) :
+            (
+              <Link
+                to="/login"
+                onClick={closeMenu}
+                className="px-4 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition duration-200 text-center"
+              >
+                Iniciar Sesión
+              </Link>
+            )
+          }
+          
         </div>
       </div>
     </nav>
