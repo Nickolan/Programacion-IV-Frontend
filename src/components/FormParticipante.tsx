@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useId, useRef, useState } from 'react'
 import { Participante } from '../models/Participante'
 import { useParticipante } from '../context/ParticipantesContext'
 
@@ -22,6 +22,14 @@ function FormParticipante({ onSuccess }: any) {
   const { agregar, actualizar, participanteEnEdicion, setParticipanteEnEdicion, participantes } = useParticipante();
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const nombreId = useId();
+  const emailId = useId();
+  const edadId = useId();
+  const paisId = useId();
+  const modalidadId = useId();
+  const tecnologiasId = useId();
+  const nivelId = useId();
+  const terminosId = useId();
 
   // EFECTO: Si el context dice que hay alguien para editar, llenamos el formulario
   useEffect(() => {
@@ -85,14 +93,16 @@ function FormParticipante({ onSuccess }: any) {
       <div className='flex mb-5'><span>Participantes registrados: {participantes.length}</span></div>
       
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <input className="border p-2 rounded" ref={inputRef} name='nombre' value={formData.nombre} onChange={handleChange} placeholder="Nombre" type="text" required />
-        <input className="border p-2 rounded" name='email' value={formData.email} onChange={handleChange} placeholder="Email" type="email" required />
-        <input className="border p-2 rounded" name='edad' value={formData.edad} onChange={handleChange} placeholder="Edad" type="number" />
+        <input className="border p-2 rounded" ref={inputRef} id={nombreId} name='nombre' value={formData.nombre} onChange={handleChange} placeholder="Nombre" type="text" required />
+        <input className="border p-2 rounded" id={emailId} name='email' value={formData.email} onChange={handleChange} placeholder="Email" type="email" required />
+        <input className="border p-2 rounded" id={edadId} name='edad' value={formData.edad} onChange={handleChange} placeholder="Edad" type="number" />
         
-        <select className="border p-2 rounded" name="pais" value={formData.pais} onChange={handleChange}>
+        <select className="border p-2 rounded" id={paisId} name="pais" value={formData.pais} onChange={handleChange}>
             <option value="Argentina">Argentina</option>
             <option value="Chile">Chile</option>
+            <option value="Uruguay">Uruguay</option>
             <option value="Mexico">Mexico</option>
+            <option value="España">España</option>
         </select>
       </div>
 
@@ -102,8 +112,8 @@ function FormParticipante({ onSuccess }: any) {
         <div className='flex gap-3'>
           {["Presencial", "Hibrido", "Virtual"].map(mod => (
             <div key={mod}>
-              <input type="radio" name="modalidad" value={mod} checked={formData.modalidad === mod} onChange={handleChange} />
-              <label>{mod}</label>
+              <input type="radio" id={modalidadId} name="modalidad" value={mod} checked={formData.modalidad === mod} onChange={handleChange} />
+              <label htmlFor={modalidadId}>{mod}</label>
             </div>
           ))}
         </div>
@@ -115,15 +125,23 @@ function FormParticipante({ onSuccess }: any) {
         <div className='grid grid-cols-3 w-full'>
           {["React", "Angular", "Vue", "Node", "Python", "Java"].map(tech => (
             <label key={tech}>
-              <input type="checkbox" value={tech} checked={formData.tecnologias.includes(tech)} onChange={handleTecnologiasChange} /> {tech}
+              <input type="checkbox" id={tecnologiasId} value={tech} checked={formData.tecnologias.includes(tech)} onChange={handleTecnologiasChange} /> {tech}
             </label>
           ))}
         </div>
       </div>
 
+      <div className='border my-4'>
+        <select className='w-full p-1' onChange={handleChange} required value={formData.nivel} name="nivel" id={nivelId}>
+          <option value="Principiante">Principiante</option>
+          <option value="Intermedio">Intermedio</option>
+          <option value="Avanzado">Avanzado</option>
+        </select>
+      </div>
+
       <div className='flex flex-col items-start gap-2'>
         <label>
-            <input type="checkbox" name="aceptaTerminos" checked={formData.aceptaTerminos} onChange={(e) => setFormData({...formData, aceptaTerminos: e.target.checked})} required /> 
+            <input type="checkbox" id={terminosId} name="aceptaTerminos" checked={formData.aceptaTerminos} onChange={(e) => setFormData({...formData, aceptaTerminos: e.target.checked})} required /> 
             Acepto Terminos
         </label>
         

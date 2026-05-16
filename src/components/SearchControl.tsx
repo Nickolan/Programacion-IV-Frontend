@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 interface Promp {
     changeFilter: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void,
@@ -12,6 +12,22 @@ function SearchControl({
     limpiarFiltros
 
 }: Promp) {
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.ctrlKey && event.key.toLowerCase() === 'b') {
+          event.preventDefault(); // Previene la acción por defecto del navegador (ej. abrir favoritos)
+          inputRef.current?.focus();
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }, []);
     
 
     return (
@@ -24,6 +40,7 @@ function SearchControl({
                     value={filter.nombre}
                     type="text"
                     name="nombre"
+                    ref={inputRef}
                 />
 
                 <select
