@@ -6,16 +6,18 @@ import {BrowserRouter} from 'react-router-dom'
 
 import { ParticipanteProvider } from './context/ParticipantesContext.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
+import { NotificationProvider } from './context/NotificationContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-    <AuthProvider>
-
-      <ParticipanteProvider>
-        <App />
-      </ParticipanteProvider>
-    </AuthProvider>
+      <NotificationProvider>
+        <AuthProvider>
+          <ParticipanteProvider>
+            <App />
+          </ParticipanteProvider>
+        </AuthProvider>
+      </NotificationProvider>
     </BrowserRouter>
   </StrictMode>,
 )
