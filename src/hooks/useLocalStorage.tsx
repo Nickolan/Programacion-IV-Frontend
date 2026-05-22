@@ -1,12 +1,6 @@
 import { useState } from 'react';
 
-/**
- * Hook para manejar LocalStorage sincronizado con el estado de React.
- * Ideal para guardar preferencias del usuario, tokens (con cuidado), o carritos de compras.
- */
 export function useLocalStorage<T>(key: string, initialValue: T) {
-  // Pasamos una función al useState para que la lectura de localStorage
-  // solo se ejecute en el montaje inicial, y no en cada render.
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);

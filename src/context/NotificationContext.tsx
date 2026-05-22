@@ -1,4 +1,4 @@
-import React, { createContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useState, useCallback } from 'react';
 
 type NotificationType = 'success' | 'error' | 'info' | 'warning';
 
@@ -16,7 +16,7 @@ export const NotificationContext = createContext<NotificationContextProps | unde
 
 let nextId = 0;
 
-export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const NotificationProvider: React.FC<{ children: any }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const showNotification = useCallback((message: string, type: NotificationType = 'info') => {
@@ -32,7 +32,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   return (
     <NotificationContext.Provider value={{ showNotification }}>
       {children}
-      {/* Toast Container - UI is kept with the Provider to keep state and presentation synced for global toasts */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
         {notifications.map((toast) => (
           <div

@@ -1,6 +1,8 @@
 import React, { useEffect, useId, useRef, useState } from 'react'
 import { Participante } from '../models/Participante'
 import { useParticipante } from '../context/ParticipantesContext'
+import { useNotification } from '../hooks/useNotification'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 
 const initialState = {
@@ -18,8 +20,10 @@ const initialState = {
 
 function FormParticipante({ onSuccess }: any) {
 
-  const [formData, setFormData] = useState(initialState);
+  // Usamos useLocalStorage en lugar de useState para guardar como borrador por si el usuario recarga
+  const [formData, setFormData] = useLocalStorage('participante_draft', initialState);
   const { agregar, actualizar, participanteEnEdicion, setParticipanteEnEdicion, participantes } = useParticipante();
+  const { showNotification } = useNotification();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const nombreId = useId();
@@ -63,18 +67,24 @@ function FormParticipante({ onSuccess }: any) {
     e.preventDefault();
     const participanteFinal = new Participante(formData);
 
-    if (participanteEnEdicion) {
-      // Si estamos editando, usamos la acción de actualizar
-      await actualizar(participanteFinal);
-    } else {
-      // Si es nuevo, generamos un ID (o dejamos que el server lo haga) y agregamos
-      const nuevoConId = { ...participanteFinal, id: Date.now() }; 
-      await agregar(nuevoConId);
+    try {
+      if (participanteEnEdicion) {
+        // Si estamos editando, usamos la acción de actualizar
+        await actualizar(participanteFinal);
+        showNotification(`¡Participante ${participanteFinal.nombre} editado con éxito!`, 'success');
+      } else {
+        // Si es nuevo, generamos un ID (o dejamos que el server lo haga) y agregamos
+        const nuevoConId = { ...participanteFinal, id: Date.now() }; 
+        await agregar(nuevoConId);
+        showNotification(`¡Participante ${participanteFinal.nombre} registrado con éxito!`, 'success');
+      }
+      
+      setFormData(initialState);
+      onSuccess();
+    } catch (error) {
+      showNotification('Ocurrió un error al intentar guardar.', 'error');
+      console.error(error);
     }
-    
-    setFormData(initialState);
-
-    onSuccess()
   }
 
   useEffect(() => {
