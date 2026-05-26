@@ -53,6 +53,17 @@ const MenuResponsive = () => {
               </Link>
             )
           }
+          {
+            usuario?.id && (
+              <Link
+                to="/cursos"
+                onClick={closeMenu}
+                className="px-5 py-2 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-lg transition duration-200"
+              >
+                Cursos
+              </Link>
+            )
+          }
         </div>
 
         <button

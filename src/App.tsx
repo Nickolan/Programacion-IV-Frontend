@@ -11,6 +11,9 @@ import PublicaPage from "./pages/PublicaPage";
 import { useEffect } from "react";
 
 import { useAuth } from "./context/AuthContext";
+import CursosPage from "./pages/CursosPage";
+import FailurePage from "./pages/FailurePage";
+import SuccessPage from "./pages/SuccessPage";
 
 function App() {
   const {getUsuarioFromToken} = useAuth();
@@ -36,6 +39,9 @@ function App() {
       <Route path="/lista" element={<PrivateRoute rolesHabilitados={["CONSULTA", "ADMIN"]}><ListaPage/></PrivateRoute>} />
       <Route path="/nuevo" element={<PrivateRoute rolesHabilitados={["ADMIN"]}><FormularioPage/></PrivateRoute>} />
       <Route path="/editar/:id" element={<PrivateRoute rolesHabilitados={["ADMIN"]}><EditarPage/></PrivateRoute>} />
+      <Route path="/cursos" element={<PrivateRoute rolesHabilitados={["CONSULTA", "ADMIN"]}><CursosPage/></PrivateRoute>} />
+      <Route path="/success" element={<SuccessPage/>} />
+      <Route path="/failure" element={<FailurePage/>} />
     </Routes>
 
 
