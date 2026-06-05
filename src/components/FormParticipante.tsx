@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef, useState } from 'react'
+import React, { useEffect, useId, useRef } from 'react'
 import { Participante } from '../models/Participante'
 import { useParticipante } from '../context/ParticipantesContext'
 import { useNotification } from '../hooks/useNotification'
@@ -21,7 +21,7 @@ const initialState = {
 function FormParticipante({ onSuccess }: any) {
 
   // Usamos useLocalStorage en lugar de useState para guardar como borrador por si el usuario recarga
-  const [formData, setFormData] = useLocalStorage('participante_draft', initialState);
+  const [formData, setFormData] = useLocalStorage('participante_draft', initialState); // Cambiar a TP-7 en caso de no entender
   const { agregar, actualizar, participanteEnEdicion, setParticipanteEnEdicion, participantes } = useParticipante();
   const { showNotification } = useNotification();
 

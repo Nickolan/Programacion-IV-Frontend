@@ -17,7 +17,8 @@ const ParticipantesContext = createContext<ContextType | null>(null);
 
 export const ParticipanteProvider = ({children}: {children: ReactNode}) => {
 
-    const [participantes, dispatch] = useReducer(reducer, [])
+    // TypeScript infiere automáticamente los tipos de 'state' y 'dispatch'
+    const [participantes, dispatch] = useReducer(reducer, []) // (Reducer, initialState)
     const [participanteEnEdicion, setParticipanteEnEdicion] = useState<Participante | null>(null);
 
     
