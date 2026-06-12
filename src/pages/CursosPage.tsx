@@ -87,7 +87,7 @@ const CursosPage = () => {
                         </div>
                         
                         <div className="flex justify-center">
-                            <CheckoutMP total={cursoSeleccionado.precio} />
+                            <CheckoutMP total={cursoSeleccionado.precio} curso={cursoSeleccionado.nombre} />
                         </div>
                     </div>
                 )}

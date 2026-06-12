@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 const SuccessPage = () => {
     const [searchParams] = useSearchParams();
     const paymentId = searchParams.get('payment_id') || searchParams.get('collection_id');
+    const curso = searchParams.get("external_reference") || ''
 
     return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -18,7 +19,7 @@ const SuccessPage = () => {
                     ¡Pago Exitoso!
                 </h2>
                 <p className="text-slate-600 mb-6">
-                    Tu compra se ha procesado correctamente. Ya tienes acceso a tu nuevo curso.
+                    Tu compra se ha procesado correctamente. Ya tienes acceso a al curso de {curso}.
                 </p>
 
                 {paymentId && (

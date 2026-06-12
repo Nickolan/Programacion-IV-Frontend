@@ -8,9 +8,10 @@ initMercadoPago("APP_USR-5982f75d-4edd-4de7-b08e-c9cfada000f7", {
 
 interface CheckoutMPProps {
     total: number;
+    curso: string
 }
 
-const CheckoutMP = ({ total }: CheckoutMPProps) => {
+const CheckoutMP = ({ total, curso }: CheckoutMPProps) => {
     const [preferenceId, setPreferenceId] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -20,7 +21,7 @@ const CheckoutMP = ({ total }: CheckoutMPProps) => {
         setError(null);
         
         try {
-            const response = await axios.post(`http://localhost:8000/create_preference`, { total });
+            const response = await axios.post(`http://localhost:8000/create_preference`, { total, curso });
             console.log(response.data.id);
             
             setPreferenceId(response.data.id);

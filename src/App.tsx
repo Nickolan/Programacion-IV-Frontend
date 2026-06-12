@@ -30,6 +30,15 @@ function App() {
     }
   }, [])
 
+  /**
+    const numbers = [1, 2, 3, 4];
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    console.log(sum); // Output: 10 
+   
+
+    array.sort((a, b) => a.posicion.localeCompare(b.posicion));
+   */
+
   return (
     
     <Routes>
